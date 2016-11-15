@@ -17,4 +17,5 @@
 # limitations under the License.
 #
 
+# This looks like an utility that adds the "Content-Type" to the cURL, conveying expect json.
 curl -H "Content-Type: application/json" -d "$1" $2

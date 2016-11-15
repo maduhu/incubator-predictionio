@@ -21,6 +21,7 @@
 # pio-env.sh is loaded from PIO_CONF_DIR if set, or within the current
 # directory's conf/ subdirectory.
 
+# Looks like a variable loader from the *-env.sh files. If that file is not found, then use the sys envoirment variables from the memory(that are acrually loaded from the bashrc)
 if [ -z "$PIO_ENV_LOADED" ]; then
   export PIO_ENV_LOADED=1
 

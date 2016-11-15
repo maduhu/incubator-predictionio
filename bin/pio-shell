@@ -17,11 +17,13 @@
 # limitations under the License.
 #
 
+# This launches an interactive scala shell to use.
 export PIO_HOME="$(cd `dirname $0`/..; pwd)"
 . ${PIO_HOME}/bin/load-pio-env.sh
 
 if [[ "$1" == "--with-spark" ]]
 then
+  # if an additional "with spark" switch is added, then actually lauch the spark scala shell. (possibly with additional loaded jars)
   echo "Starting the PIO shell with the Apache Spark Shell."
   # compute the $ASSEMPLY_JAR, the location of the assemply jar, with
   # bin/compute-classpath.sh

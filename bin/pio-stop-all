@@ -21,11 +21,13 @@
 # node scenario.
 
 # Figure out where PredictionIO is installed
+# To better understand this, you have to start with the pio-start-all script
 export PIO_HOME="$(cd `dirname $0`/..; pwd)"
 
 . ${PIO_HOME}/bin/load-pio-env.sh
 
 # PredictionIO Event Server
+# This part says, extract the eventserver pid and then send the TERM signal.
 echo "Stopping PredictionIO Event Server..."
 PIDFILE=${PIO_HOME}/eventserver.pid
 if [ -e ${PIDFILE} ]; then
@@ -35,12 +37,14 @@ fi
 
 # HBase
 echo "Stopping HBase..."
+# Here we are launching the HBase script that actually stops the HBase. No this script could also be sending the TERM signal.
 if [ -n "$PIO_STORAGE_SOURCES_HBASE_HOME" ]; then
   $PIO_STORAGE_SOURCES_HBASE_HOME/bin/stop-hbase.sh
 fi
 
 # Elasticsearch
 echo "Stopping Elasticsearch..."
+# Elasticsearch pid is placed in the PIO home directory, find it, grep it, kill it (sends a TERM signal. Don't yank the RAM, now thats just being cruel).
 PIDFILE=${PIO_HOME}/es.pid
 if [ -e ${PIDFILE} ]; then
   cat ${PIDFILE} | xargs kill
@@ -48,6 +52,7 @@ if [ -e ${PIDFILE} ]; then
 fi
 
 #PGSQL
+# For now we are not worried about PGSQL part as we are not gonna use it. We will revisit this code at a later time
 OS=`uname`
 if [[ "$OS" = "Darwin" ]]; then
   pg_cmd=`which pg_ctl`

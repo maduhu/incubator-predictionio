@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+# This is used just it launch the event_server. pio-start also has this part. read more about this part in there.
 search() {
   local i=0;
   local needle=$1;

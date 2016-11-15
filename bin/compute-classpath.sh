@@ -20,6 +20,7 @@
 SCALA_VERSION=2.10
 
 # Figure out where PredictionIO is installed
+# append all the required jars and stuff to the classpath variable before T-10 lauch.
 FWDIR="$(cd `dirname $0`/..; pwd)"
 
 . ${FWDIR}/bin/load-pio-env.sh

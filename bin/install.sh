@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+# This whole script is to install the PIO. We are not worried about this right now.
 OS=`uname`
 PIO_VERSION=0.11.0-SNAPSHOT
 SPARK_VERSION=1.6.2

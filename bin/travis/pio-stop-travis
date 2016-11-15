@@ -21,6 +21,7 @@
 # node scenario.
 
 # Figure out where PredictionIO is installed
+# Probably for Travis CI?
 export PIO_HOME="$(cd `dirname $0`/..; pwd)"
 
 . ${PIO_HOME}/load-pio-env.sh
