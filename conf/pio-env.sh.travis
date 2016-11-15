@@ -18,6 +18,7 @@
 # limitations under the License.
 #
 
+# This is a Travis CI configuration file. We can revisit later.
 # PredictionIO Main Configuration
 #
 # This section controls core behavior of PredictionIO. It is very likely that
