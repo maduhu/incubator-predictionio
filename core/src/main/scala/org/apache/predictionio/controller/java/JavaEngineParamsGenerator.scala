@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// All the classes in this folder extends some base classes or the other.
+// Not goinig to comment all the files.
 
 package org.apache.predictionio.controller.java
 

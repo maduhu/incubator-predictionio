@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+// If the default one does not cut it, we can use this to implement custom serializer
 
 package org.apache.predictionio.controller
 

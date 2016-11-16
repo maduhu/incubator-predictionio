@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-
+/* The entry point to PIO, focus more on the method Console.
+ * Some methods are commented. Some needs more work/research.
+ * More detailed info about each app is available as text files at incubator-predictionio\tools\src\main\twirl\org\apache\predictionio\tools\console\ directory
+ * twirl is a template engine for play-framwork and so the incubator-predictionio\tools\src\main\twirl\ directory contains no code to explore.
+ * No need to explore for code in any of the twirl directory
+ */
+ 
 package org.apache.predictionio.tools.console
 
 import java.io.File
@@ -60,6 +66,8 @@ import scala.sys.process._
 import scala.util.Random
 import scalaj.http.Http
 
+// Args builder for some command line arguments.
+
 case class ConsoleArgs(
   build: BuildArgs = BuildArgs(),
   app: AppArgs = AppArgs(),
@@ -94,6 +102,8 @@ case class AppArgs(
 case class AccessKeyArgs(
   accessKey: String = "",
   events: Seq[String] = Seq())
+
+// Console is the main tunnel. things like train, build, deploy are done through here.
 
 object Console extends Logging {
   def main(args: Array[String]): Unit = {
@@ -150,12 +160,14 @@ object Console extends Logging {
         c.copy(spark = c.spark.copy(scratchUri = Some(new URI(x))))
       }
       note("")
+      // This one displays the version information.
       cmd("version").
         text("Displays the version of this command line console.").
         action { (_, c) =>
           c.copy(commands = c.commands :+ "version")
         }
       note("")
+      // This displays the help statement for the individual command.
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
       } children(
@@ -165,6 +177,7 @@ object Console extends Logging {
           }
         )
       note("")
+      // This builds the template. We will dig deep into how building happens.
       cmd("build").
         text("Build an engine at the current directory.").
         action { (_, c) =>
@@ -187,12 +200,14 @@ object Console extends Logging {
           }
         )
       note("")
+      // This one is used to unregister an engine from the eventserver
       cmd("unregister").
         text("Unregister an engine at the current directory.").
         action { (_, c) =>
           c.copy(commands = c.commands :+ "unregister")
         }
       note("")
+      // This option trains the model
       cmd("train").
         text("Kick off a training using an engine. This will produce an\n" +
           "engine instance. This command will pass all pass-through\n" +
@@ -243,6 +258,7 @@ object Console extends Logging {
           }
         )
       note("")
+      // This is used to evaluate the model. Need to dig deep into this.
       cmd("eval").
         text("Kick off an evaluation using an engine. This will produce an\n" +
           "engine instance. This command will pass all pass-through\n" +
@@ -271,6 +287,7 @@ object Console extends Logging {
           }
         )
       note("")
+      // This one deploys the model. Need to dig deep into this.
       cmd("deploy").
         text("Deploy an engine instance as a prediction server. This\n" +
           "command will pass all pass-through arguments to its underlying\n" +
@@ -342,6 +359,7 @@ object Console extends Logging {
           } text("Port to unbind from. Default: 8000")
         )
       note("")
+      // This will create a dashboard. server listens at 9000
       cmd("dashboard").
         text("Launch a dashboard at the specific IP and port.").
         action { (_, c) =>
@@ -355,6 +373,7 @@ object Console extends Logging {
           } text("Port to bind to. Default: 9000")
         )
       note("")
+      // This launches the event server. but we often not come in this route as we use pio-start-all binary.
       cmd("eventserver").
         text("Launch an Event Server at the specific IP and port.").
         action { (_, c) =>
@@ -370,6 +389,7 @@ object Console extends Logging {
             c.copy(eventServer = c.eventServer.copy(stats = true))
           }
         )
+      // Launches the admin server at the specified port.
       cmd("adminserver").
         text("Launch an Admin Server at the specific IP and port.").
         action { (_, c) =>
@@ -383,6 +403,7 @@ object Console extends Logging {
         } text("Port to bind to. Default: 7071")
         )
       note("")
+      // This runs the spark driver program of the engine. As we discussed the 'pio build' command just builds a spark job.
       cmd("run").
         text("Launch a driver program. This command will pass all\n" +
           "pass-through arguments to its underlying spark-submit command.\n" +
@@ -406,12 +427,15 @@ object Console extends Logging {
           } text("Skip building external dependencies assembly.")
         )
       note("")
+      // This is a check to see if all the necessary components of pio are running normally.
+      // Before we deploy an engine it is adviced to run this and verify everything is working. First check point for debugging.
       cmd("status").
         text("Displays status information about the PredictionIO system.").
         action { (_, c) =>
           c.copy(commands = c.commands :+ "status")
         }
       note("")
+      // Upgrading engines
       cmd("upgrade").
         text("No longer supported!").
         action { (_, c) =>
@@ -442,12 +466,14 @@ object Console extends Logging {
               }
             ),
           note(""),
+          // sub option of app to give a list of avliable applications
           cmd("list").
             text("List all apps.").
             action { (_, c) =>
               c.copy(commands = c.commands :+ "list")
             },
           note(""),
+          // Show details of one app.
           cmd("show").
             text("Show details of an app.").
             action { (_, c) =>
@@ -458,6 +484,7 @@ object Console extends Logging {
               } text("Name of the app to be shown.")
             ),
           note(""),
+          // Deletes the app
           cmd("delete").
             text("Delete an app.").
             action { (_, c) =>
@@ -471,6 +498,7 @@ object Console extends Logging {
               } text("Delete an app without prompting for confirmation")
             ),
           note(""),
+          // Delets the data of an app
           cmd("data-delete").
             text("Delete data of an app").
             action { (_, c) =>

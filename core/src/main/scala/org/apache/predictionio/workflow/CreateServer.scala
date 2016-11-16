@@ -15,9 +15,15 @@
  * limitations under the License.
  */
 
+/* This file, as name suggests created server, listens for the requests, generates results for the
+ * queries and then respons to the server request with them in JSON format.
+ * The Akka Actors systems is implemented, before diggining into this it is better to get an idea on
+ * how the actor system is implemented.
+ */
 
 package org.apache.predictionio.workflow
 
+// Some imports
 import java.io.PrintWriter
 import java.io.Serializable
 import java.io.StringWriter
@@ -70,6 +76,7 @@ import scala.util.Random
 import scala.util.Success
 import scalaj.http.HttpOptions
 
+// Extending some default serializers
 class KryoInstantiator(classLoader: ClassLoader) extends ScalaKryoInstantiator {
   override def newKryo(): KryoBase = {
     val kryo = super.newKryo()
@@ -86,6 +93,7 @@ object KryoInstantiator extends Serializable {
   }
 }
 
+// Server configuration for the engine
 case class ServerConfig(
   batch: String = "",
   engineInstanceId: String = "",
@@ -111,7 +119,7 @@ case class BindServer()
 case class StopServer()
 case class ReloadServer()
 
-
+// The server is created here.
 object CreateServer extends Logging {
   val actorSystem = ActorSystem("pio-server")
   val engineInstances = Storage.getMetaDataEngineInstances
@@ -266,6 +274,7 @@ object CreateServer extends Logging {
   }
 }
 
+// MasterActor extends the methods in the common dir classes that we saw that are written in java
 class MasterActor (
     sc: ServerConfig,
     engineInstance: EngineInstance,
@@ -495,6 +504,7 @@ class ServerActor[Q, P](
         }
       }
     } ~
+    // When the GET request is pointed to queries.json This is where the parsing begins
     path("queries.json") {
       post {
         detach() {
@@ -574,6 +584,7 @@ class ServerActor[Q, P](
                     "query" -> query,
                     "prediction" -> prediction)) ++ queryPrId
                 // At this point args.accessKey should be Some(String).
+                // Here is where we send the computed result to the client.
                 val accessKey = args.accessKey.getOrElse("")
                 val f: Future[Int] = future {
                   scalaj.http.Http(

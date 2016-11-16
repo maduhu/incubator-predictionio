@@ -40,6 +40,7 @@ import scala.language.existentials
 
 object CreateWorkflow extends Logging {
 
+  // Initialize to a dummy config file
   case class WorkflowConfig(
     deployMode: String = "",
     batch: String = "",
@@ -74,6 +75,8 @@ object CreateWorkflow extends Logging {
     }
   }
 
+  // If the config file is present, then create the workflow.
+  // Think of workflow is a stack of todo things.
   val parser = new scopt.OptionParser[WorkflowConfig]("CreateWorkflow") {
     override def errorOnUnknownArgument: Boolean = false
     opt[String]("batch") action { (x, c) =>
